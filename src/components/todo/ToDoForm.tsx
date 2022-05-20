@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Todo } from 'data/models'
 
-interface IToDoForm {
+type ToDoFormPropsType = {
   onSubmit(todo: Todo): void
+  isEdit: boolean
 }
-function ToDoForm(props: IToDoForm) {
-
+function ToDoForm(props: ToDoFormPropsType) {
+  const {onSubmit, isEdit} = props
   const [input, setInput] = useState('')
 
   const handleOnChange = (e: any) => {
@@ -14,16 +15,26 @@ function ToDoForm(props: IToDoForm) {
 
   const handleSubmit  = (e: any) => {
     e.preventDefault()
-    props.onSubmit({
-      id: 10,
-      content: input
+    onSubmit({
+      id: Math.random(),
+      content: input,
+      isComplete: false
     })
     setInput('')
   }
 
   return (
     <form className='todo-form' onSubmit={handleSubmit}>
-      <input 
+      {isEdit ? (<>
+        <input 
+      type="text" 
+      value={input}
+      className='todo-input edit'
+      onChange={handleOnChange}
+      />
+      <button className='todo-button edit'>Update</button>
+      </>) : (<>
+        <input 
       type="text" 
       placeholder='Add'
       value={input}
@@ -31,6 +42,8 @@ function ToDoForm(props: IToDoForm) {
       onChange={handleOnChange}
       />
       <button className='todo-button'>Add</button>
+      </>)}
+     
     </form>
   )
 }
